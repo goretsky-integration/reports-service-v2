@@ -6,5 +6,5 @@ __all__ = ('Event',)
 
 
 class Event(BaseModel):
-    units: list[Unit] = conlist(min_length=1)
+    units: list[Unit] = conlist(item_type=Unit, min_length=1)
     chat_ids: set[int]
