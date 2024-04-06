@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "Reports-service"
+version = "1.0.0"
+description = "Service which listens message queue for late delivery vouchers reports requests."
+authors = ["Eldos <eldos.baktybekov@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+faststream = {extras = ["rabbit"], version = "^0.4.7"}
+httpx = "^0.27.0"
+structlog = "^24.1.0"
+
+
+[tool.poetry.group.dev.dependencies]
+watchfiles = "^0.21.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
