@@ -630,6 +630,18 @@ sentry-sdk = "*"
 structlog = "*"
 
 [[package]]
+name = "toolz"
+version = "0.12.1"
+description = "List processing tools and functional utilities"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "toolz-0.12.1-py3-none-any.whl", hash = "sha256:d22731364c07d72eea0a0ad45bafb2c2937ab6fd38a3507bf55eae8744aa7d85"},
+    {file = "toolz-0.12.1.tar.gz", hash = "sha256:ecca342664893f177a13dac0e6b41cbd8ac25a358e5f215316d43e2100224f4d"},
+]
+
+[[package]]
 name = "typer"
 version = "0.12.1"
 description = "Typer, build great CLIs. Easy to code. Based on Python type hints."
@@ -872,4 +884,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "8402caebd4382892b5d5bb654b11d4d01adcb606dd0a60ea7e34f2ccc5719a20"
+content-hash = "61316e420f1afe8308ee03c069fb51f208bf687e947892ebf801139706921784"
