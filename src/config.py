@@ -1,23 +1,32 @@
 import pathlib
 import tomllib
 
-from pydantic import BaseModel, HttpUrl
+from pydantic import BaseModel, HttpUrl, SecretStr
 
 from enums import CountryCode
 
 __all__ = (
     'CONFIG_FILE_PATH',
     'Config',
+    'SentryConfig',
     'get_config',
 )
 
 CONFIG_FILE_PATH = pathlib.Path(__file__).parent.parent / 'config.toml'
 
 
+class SentryConfig(BaseModel):
+    is_enabled: bool
+    dsn: SecretStr
+    traces_sample_rate: float
+    profiles_sample_rate: float
+
+
 class Config(BaseModel):
     auth_credentials_storage_base_url: HttpUrl
     units_storage_base_url: HttpUrl
     country_code: CountryCode
+    sentry: SentryConfig
 
 
 def get_config() -> Config:
@@ -31,4 +40,5 @@ def get_config() -> Config:
             config['external_services_api']['units_storage_base_url']
         ),
         country_code=config['country_code'],
+        sentry=SentryConfig.model_validate(config['sentry']),
     )
