@@ -14,9 +14,11 @@ class LateDeliveryVoucher(BaseModel):
     order_accepted_at: datetime = Field(alias='orderAcceptedAtLocal')
     unit_uuid: UUID = Field(alias='unitId')
     predicted_delivery_time: datetime = Field(
-        alias='predictedDeliveryTimeLocal')
+        alias='predictedDeliveryTimeLocal',
+    )
     order_fulfilment_flag_at: datetime | None = Field(
-        alias='orderFulfilmentFlagAtLocal')
+        alias='orderFulfilmentFlagAtLocal',
+    )
     delivery_deadline: datetime = Field(alias='deliveryDeadlineLocal')
     issuer_name: LateDeliveryVoucherIssuer | None = Field(alias='issuerName')
     courier_staff_id: UUID | None = Field(alias='courierStaffId')
