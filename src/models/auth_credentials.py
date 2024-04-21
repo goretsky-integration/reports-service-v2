@@ -6,4 +6,3 @@ __all__ = ('AccountTokens',)
 class AccountTokens(BaseModel):
     account_name: str
     access_token: SecretStr
-    refresh_token: SecretStr
