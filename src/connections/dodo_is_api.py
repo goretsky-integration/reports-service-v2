@@ -95,7 +95,7 @@ class DodoIsApiConnection:
             from_datetime: datetime,
             to_datetime: datetime,
             unit_uuids: Iterable[UUID],
-    ):
+    ) -> httpx.Response:
         request_query_params = build_request_query_params(
             from_datetime=from_datetime,
             to_datetime=to_datetime,
