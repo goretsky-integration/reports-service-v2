@@ -7,6 +7,7 @@ import httpx
 from pydantic import SecretStr
 
 from enums import CountryCode
+from new_types import DodoIsApiConnectionHttpClient
 
 __all__ = (
     'stringify_uuids',
@@ -15,8 +16,6 @@ __all__ = (
     'build_headers',
     'build_request_query_params',
 )
-
-from new_types import DodoIsApiConnectionHttpClient
 
 
 def stringify_uuids(uuids: Iterable[UUID]) -> str:
@@ -82,6 +81,27 @@ class DodoIsApiConnection:
             unit_uuids=unit_uuids,
         )
         url = '/delivery/vouchers'
+        headers = build_headers(access_token=access_token)
+        return await self.__http_client.get(
+            url=url,
+            params=request_query_params,
+            headers=headers,
+        )
+
+    async def get_delivery_statistics(
+            self,
+            *,
+            access_token: SecretStr,
+            from_datetime: datetime,
+            to_datetime: datetime,
+            unit_uuids: Iterable[UUID],
+    ):
+        request_query_params = build_request_query_params(
+            from_datetime=from_datetime,
+            to_datetime=to_datetime,
+            unit_uuids=unit_uuids,
+        )
+        url = '/delivery/statistics'
         headers = build_headers(access_token=access_token)
         return await self.__http_client.get(
             url=url,
