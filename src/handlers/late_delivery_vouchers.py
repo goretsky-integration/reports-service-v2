@@ -7,26 +7,21 @@ from faststream.rabbit import RabbitRouter
 from connections import (
     AuthCredentialsStorageConnection,
     DodoIsApiConnection,
-    UnitsStorageConnection,
 )
 from dependencies import (
     get_auth_credentials_storage_connection,
     get_dodo_is_api_connection,
-    get_units_storage_connection,
 )
 from models import Event, LateDeliveryVoucher, Unit
-
-__all__ = ('router',)
-
 from parsers import (
-    filter_units,
     group_by_dodo_is_api_account_name,
     parse_account_tokens_response,
-    parse_units_response,
 )
 from parsers.dodo_is_api import parse_late_delivery_vouchers_response
 from services import compute_late_delivery_vouchers_statistics
 from time_helpers import Period
+
+__all__ = ('router',)
 
 router = RabbitRouter()
 
