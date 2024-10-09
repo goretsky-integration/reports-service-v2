@@ -87,4 +87,5 @@ class DodoIsApiConnection:
             url=url,
             params=request_query_params,
             headers=headers,
+            timeout=60,
         )

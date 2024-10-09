@@ -14,6 +14,7 @@ from dependencies import (
     get_dodo_is_api_connection,
     get_units_storage_connection,
 )
+from helpers import batched
 from models import Event, LateDeliveryVoucher, Unit
 
 __all__ = ('router',)
@@ -104,15 +105,16 @@ async def on_late_delivery_vouchers_event(
     tasks = []
     async with asyncio.TaskGroup() as task_group:
         for account_name, units_group in account_name_to_units.items():
-            task = task_group.create_task(
-                process_account_units_for_late_delivery_vouchers(
-                    account_name=account_name,
-                    units=units_group,
-                    dodo_is_api_connection=dodo_is_api_connection,
-                    auth_credentials_storage_connection=auth_credentials_storage_connection,
-                ),
-            )
-            tasks.append(task)
+            for units_group_batch in batched(units_group, batch_size=2):
+                task = task_group.create_task(
+                    process_account_units_for_late_delivery_vouchers(
+                        account_name=account_name,
+                        units=units_group_batch,
+                        dodo_is_api_connection=dodo_is_api_connection,
+                        auth_credentials_storage_connection=auth_credentials_storage_connection,
+                    ),
+                )
+                tasks.append(task)
 
     vouchers_for_today, vouchers_for_week_before = unpack_tasks(tasks)
 
