@@ -7,36 +7,34 @@ from faststream.rabbit import RabbitRouter
 from connections import (
     AuthCredentialsStorageConnection,
     DodoIsApiConnection,
-    UnitsStorageConnection,
 )
 from dependencies import (
     get_auth_credentials_storage_connection,
     get_dodo_is_api_connection,
-    get_units_storage_connection,
 )
 from helpers import batched
 from models import Event, LateDeliveryVoucher, Unit
 
-__all__ = ('router',)
 
 from parsers import (
-    filter_units,
     group_by_dodo_is_api_account_name,
     parse_account_tokens_response,
-    parse_units_response,
 )
 from parsers.dodo_is_api import parse_late_delivery_vouchers_response
 from services import compute_late_delivery_vouchers_statistics
 from time_helpers import Period
 
+__all__ = ("router",)
+
+
 router = RabbitRouter()
 
 
 async def process_account_units_for_late_delivery_vouchers(
-        account_name: str,
-        units: Iterable[Unit],
-        dodo_is_api_connection: DodoIsApiConnection,
-        auth_credentials_storage_connection: AuthCredentialsStorageConnection,
+    account_name: str,
+    units: Iterable[Unit],
+    dodo_is_api_connection: DodoIsApiConnection,
+    auth_credentials_storage_connection: AuthCredentialsStorageConnection,
 ) -> tuple[list[LateDeliveryVoucher], list[LateDeliveryVoucher]]:
     account_tokens = await auth_credentials_storage_connection.get_tokens(
         account_name=account_name,
@@ -84,21 +82,21 @@ def unpack_tasks(tasks: Iterable[asyncio.Task]) -> tuple[list, list]:
     return all_vouchers_for_today, all_vouchers_for_week_before
 
 
-@router.subscriber('late-delivery-vouchers')
-@router.publisher('specific-chats-event')
+@router.subscriber("late-delivery-vouchers")
+@router.publisher("specific-chats-event")
 @inject
 async def on_late_delivery_vouchers_event(
-        event: Event,
-        auth_credentials_storage_connection: (
-                AuthCredentialsStorageConnection
-        ) = Depends(
-            get_auth_credentials_storage_connection,
-            use_cache=False,
-        ),
-        dodo_is_api_connection: DodoIsApiConnection = Depends(
-            get_dodo_is_api_connection,
-            use_cache=False,
-        ),
+    event: Event,
+    auth_credentials_storage_connection: (
+        AuthCredentialsStorageConnection
+    ) = Depends(
+        get_auth_credentials_storage_connection,
+        use_cache=False,
+    ),
+    dodo_is_api_connection: DodoIsApiConnection = Depends(
+        get_dodo_is_api_connection,
+        use_cache=False,
+    ),
 ):
     account_name_to_units = group_by_dodo_is_api_account_name(event.units)
 
@@ -126,7 +124,7 @@ async def on_late_delivery_vouchers_event(
         unit_uuid_to_name=unit_uuid_to_name,
     )
     return {
-        'type': 'LATE_DELIVERY_VOUCHERS',
-        'payload': vouchers_statistics,
-        'chat_ids': event.chat_ids,
+        "type": "LATE_DELIVERY_VOUCHERS",
+        "payload": vouchers_statistics,
+        "chat_ids": event.chat_ids,
     }
