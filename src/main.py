@@ -2,7 +2,7 @@ from faststream import FastStream
 from faststream.rabbit import RabbitBroker
 
 from handlers import router
-from src.logger import setup_logging
+from logger import setup_logging
 
 
 broker = RabbitBroker("amqp://localhost:5672")

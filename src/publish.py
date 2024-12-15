@@ -272,7 +272,7 @@ async def main():
                     }
                 ]
             },
-            'late-delivery-vouchers',
+            'sales-statistics',
         )
 
 

@@ -15,7 +15,6 @@ from dependencies import (
 from helpers import batched
 from models import Event, LateDeliveryVoucher, Unit
 
-
 from parsers import (
     group_by_dodo_is_api_account_name,
     parse_account_tokens_response,
