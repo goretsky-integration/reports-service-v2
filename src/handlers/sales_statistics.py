@@ -1,4 +1,3 @@
-from faststream.rabbit import RabbitRouter
 from fast_depends import inject, Depends
 
 from models.events import Event, SpecificChatsEvent
@@ -18,16 +17,15 @@ from logger import create_logger
 from parsers.units import to_uuids
 from time_helpers import Period
 from parsers import group_by_dodo_is_api_account_name
-from domain.production.services import UnitsSalesReportGenerator
-from domain.production.models import UnitSalesStatistics
-
+from domain.production.services import SalesStatisticsReportGenerator
+from domain.production.models import SalesStatistics
+from handlers.router import router
 
 logger = create_logger("handlers:revenue")
 
-router = RabbitRouter()
-
 
 @router.subscriber("sales-statistics")
+@router.publisher("specific-chats-event")
 @inject
 async def on_revenue_report_event(
     event: Event,
@@ -39,7 +37,7 @@ async def on_revenue_report_event(
         get_auth_credentials_storage_connection,
         use_cache=False,
     ),
-) -> SpecificChatsEvent[list[UnitSalesStatistics]]:
+) -> SpecificChatsEvent[SalesStatistics]:
     account_names = {unit.dodo_is_api_account_name for unit in event.units}
     auth_tokens_fetch_interactor = AuthTokensFetchInteractor(
         account_names=account_names,
@@ -92,18 +90,18 @@ async def on_revenue_report_event(
         productivity_statistics_fetch_results_for_today,
     )
 
-    report_generator = UnitsSalesReportGenerator(
+    report_generator = SalesStatisticsReportGenerator(
         event=event,
         productivity_statistics_fetch_results_for_today=productivity_statistics_fetch_results_for_today,
         productivity_statistics_fetch_results_for_week_before=productivity_statistics_fetch_results_for_week_before,
     )
 
-    units_sales_statistics = report_generator.get_units_sales_statistics()
+    sales_statistics = report_generator.get_report()
 
-    logger.info("Units sales statistics: %s", units_sales_statistics)
+    logger.info("Sales statistics report: %s", sales_statistics)
 
-    return SpecificChatsEvent[list[UnitSalesStatistics]](
-        type="REVENUE_STATISTICS",
+    return SpecificChatsEvent[SalesStatistics](
+        type="SALES_STATISTICS",
         chat_ids=event.chat_ids,
-        payload=units_sales_statistics,
+        payload=sales_statistics,
     )

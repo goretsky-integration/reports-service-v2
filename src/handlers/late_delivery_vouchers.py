@@ -2,7 +2,6 @@ import asyncio
 from collections.abc import Iterable
 
 from fast_depends import Depends, inject
-from faststream.rabbit import RabbitRouter
 
 from connections import (
     AuthCredentialsStorageConnection,
@@ -22,11 +21,7 @@ from parsers import (
 from parsers.dodo_is_api import parse_late_delivery_vouchers_response
 from services import compute_late_delivery_vouchers_statistics
 from time_helpers import Period
-
-__all__ = ("router",)
-
-
-router = RabbitRouter()
+from handlers.router import router
 
 
 async def process_account_units_for_late_delivery_vouchers(

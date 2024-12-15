@@ -1,6 +1,6 @@
 from collections import defaultdict
 from collections.abc import Iterable
-from typing import TypeVar
+from typing import Protocol, TypeVar
 from uuid import UUID
 
 import httpx
@@ -17,6 +17,13 @@ __all__ = (
 )
 
 T = TypeVar("T", bound=Unit)
+
+
+class HasUnitUUID(Protocol):
+    unit_uuid: UUID
+
+
+HasUnitUUIDT = TypeVar("HasUnitUUIDT", bound=HasUnitUUID)
 
 
 def parse_units_response(response: httpx.Response) -> list[Unit]:
@@ -43,10 +50,10 @@ def group_by_dodo_is_api_account_name(
     return dict(account_name_to_items)
 
 
-def group_by_unit_uuid(items: Iterable[T]) -> dict[UUID, list[T]]:
-    unit_uuid_to_items: defaultdict[UUID, list[T]] = defaultdict(list)
+def group_by_unit_uuid(items: Iterable[HasUnitUUIDT]) -> dict[UUID, list[HasUnitUUIDT]]:
+    unit_uuid_to_items: defaultdict[UUID, list[HasUnitUUIDT]] = defaultdict(list)
     for item in items:
-        unit_uuid_to_items[item.uuid].append(item)
+        unit_uuid_to_items[item.unit_uuid].append(item)
     return dict(unit_uuid_to_items)
 
 

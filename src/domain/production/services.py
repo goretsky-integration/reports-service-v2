@@ -2,7 +2,11 @@ from collections.abc import Iterable
 from functools import cached_property
 from uuid import UUID
 
-from domain.production.models import UnitSalesStatistics
+from domain.production.models import (
+    UnitSalesStatistics,
+    TotalSalesStatistics,
+    SalesStatistics,
+)
 from interactors.productivity_statistics import FetchResult
 from models.dodo_is_api import UnitProductivityStatistics
 from models.events import Event
@@ -30,7 +34,7 @@ def map_unit_uuid_to_productivity_statistics(
     return unit_uuid_to_statistics
 
 
-class UnitsSalesReportGenerator:
+class SalesStatisticsReportGenerator:
     def __init__(
         self,
         event: Event,
@@ -66,6 +70,29 @@ class UnitsSalesReportGenerator:
     ) -> dict[UUID, UnitProductivityStatistics]:
         return map_unit_uuid_to_productivity_statistics(
             results=self.__productivity_statistics_fetch_results_for_week_before,
+        )
+
+    def get_total_sales_statistics(self) -> TotalSalesStatistics:
+        units_sales_for_today = [
+            unit_sales_statistics.sales
+            for unit_sales_statistics in self.unit_uuid_to_statistics_for_today.values()
+        ]
+        units_sales_for_week_before = [
+            unit_sales_statistics.sales
+            for unit_sales_statistics in self.unit_uuid_to_statistics_for_week_before.values()
+        ]
+
+        total_sales_for_today = sum(units_sales_for_today)
+        total_sales_for_week_before = sum(units_sales_for_week_before)
+
+        growth_from_week_before = compute_growth_in_percents(
+            current_value=total_sales_for_today,
+            previous_value=total_sales_for_week_before,
+        )
+
+        return TotalSalesStatistics(
+            sales_for_today=total_sales_for_today,
+            sales_growth_from_week_before_in_percents=growth_from_week_before,
         )
 
     def get_unit_sales_statistics(
@@ -107,3 +134,9 @@ class UnitsSalesReportGenerator:
             )
             for unit_uuid, unit_name in unit_uuids_and_names
         ]
+
+    def get_report(self) -> SalesStatistics:
+        return SalesStatistics(
+            units=self.get_units_sales_statistics(),
+            total=self.get_total_sales_statistics(),
+        )
