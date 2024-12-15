@@ -1,6 +1,6 @@
 from faststream.rabbit import RabbitRouter
 
-from . import late_delivery_vouchers, revenue
+from . import late_delivery_vouchers, sales_statistics
 
 __all__ = ('router',)
 
@@ -8,5 +8,5 @@ __all__ = ('router',)
 router = RabbitRouter()
 router.include_routers(
     late_delivery_vouchers.router,
-    revenue.router,
+    sales_statistics.router,
 )
