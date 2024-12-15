@@ -1,3 +1,4 @@
+from collections.abc import AsyncGenerator
 import contextlib
 
 import httpx
@@ -13,7 +14,7 @@ __all__ = (
 @contextlib.asynccontextmanager
 async def closing_units_storage_connection_http_client(
     base_url: str,
-) -> UnitsStorageConnectionHttpClient:
+) -> AsyncGenerator[UnitsStorageConnectionHttpClient, None]:
     async with httpx.AsyncClient(base_url=base_url) as http_client:
         yield UnitsStorageConnectionHttpClient(http_client)
 

@@ -1,3 +1,4 @@
+from collections.abc import AsyncGenerator
 from fast_depends import Depends
 
 from config import Config, get_config
@@ -15,11 +16,11 @@ __all__ = (
 
 async def get_units_storage_connection_http_client(
     config: Config = Depends(get_config, use_cache=True),
-) -> UnitsStorageConnectionHttpClient:
+) -> AsyncGenerator[UnitsStorageConnectionHttpClient, None]:
     async with closing_units_storage_connection_http_client(
         base_url=str(config.units_storage_base_url),
     ) as http_client:
-        yield http_client
+        yield UnitsStorageConnectionHttpClient(http_client)
 
 
 async def get_units_storage_connection(

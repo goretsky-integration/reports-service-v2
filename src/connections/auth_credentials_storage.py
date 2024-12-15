@@ -1,3 +1,4 @@
+from collections.abc import AsyncGenerator
 import contextlib
 
 import httpx
@@ -16,7 +17,7 @@ log = structlog.stdlib.get_logger("app")
 @contextlib.asynccontextmanager
 async def closing_auth_credentials_storage_connection_http_client(
     base_url: str,
-) -> AuthCredentialsStorageConnectionHttpClient:
+) -> AsyncGenerator[AuthCredentialsStorageConnectionHttpClient, None]:
     log.debug("Creating auth credentials storage connection HTTP client")
     async with httpx.AsyncClient(base_url=base_url) as http_client:
         yield AuthCredentialsStorageConnectionHttpClient(http_client)
@@ -33,7 +34,7 @@ class AuthCredentialsStorageConnection:
     async def get_accounts(self) -> httpx.Response:
         url = "/accounts/"
 
-        response = self.__http_client.get(url)
+        response = await self.__http_client.get(url)
 
         return response
 
