@@ -1,6 +1,6 @@
 from enum import StrEnum, auto
 
-__all__ = ('CountryCode',)
+__all__ = ("CountryCode",)
 
 
 class CountryCode(StrEnum):

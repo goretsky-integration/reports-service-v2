@@ -1,6 +1,6 @@
 from pydantic import BaseModel, SecretStr
 
-__all__ = ('AccountTokens',)
+__all__ = ("AccountTokens",)
 
 
 class AccountTokens(BaseModel):

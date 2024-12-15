@@ -2,9 +2,9 @@ import httpx
 
 from models import AccountTokens
 
-__all__ = ('parse_account_tokens_response',)
+__all__ = ("parse_account_tokens_response",)
 
 
 def parse_account_tokens_response(response: httpx.Response) -> AccountTokens:
-    response_data = response.json()
-    return AccountTokens.model_validate(response_data)
+    response_json = response.text
+    return AccountTokens.model_validate_json(response_json)
