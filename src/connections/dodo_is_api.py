@@ -8,6 +8,7 @@ import httpx
 from pydantic import SecretStr
 
 from enums import CountryCode
+from logger import create_logger
 
 __all__ = (
     "stringify_uuids",
@@ -16,6 +17,8 @@ __all__ = (
     "build_headers",
     "build_request_query_params",
 )
+
+logger = create_logger("connections:dodo_is_api")
 
 
 def stringify_uuids(uuids: Iterable[UUID]) -> str:
@@ -87,7 +90,7 @@ class DodoIsApiConnection:
             headers=headers,
             timeout=60,
         )
-    
+
     async def get_productivity_statistics(
         self,
         *,
@@ -103,9 +106,18 @@ class DodoIsApiConnection:
         )
         url = "/production/productivity"
         headers = build_headers(access_token=access_token)
-        return await self.__http_client.get(
+        logger.debug(
+            "Requesting productivity statistics from Dodo IS API: %s",
+            request_query_params,
+        )
+        response = await self.__http_client.get(
             url=url,
             params=request_query_params,
             headers=headers,
             timeout=60,
         )
+        logger.debug(
+            "Received productivity statistics from Dodo IS API with status code: %s",
+            response.status_code,
+        )
+        return response
