@@ -1,4 +1,5 @@
 import json
+from typing import Any
 
 import httpx
 
@@ -8,7 +9,7 @@ from exceptions import ConnectionResponseParseError
 __all__ = ("parse_response_json_data",)
 
 
-def parse_response_json_data(response: httpx.Response) -> dict | list:
+def parse_response_json_data(response: httpx.Response) -> Any:
     """
     Parse JSON data from the httpx.Response.
 
@@ -16,7 +17,7 @@ def parse_response_json_data(response: httpx.Response) -> dict | list:
         response (httpx.Response): The response object.
 
     Returns:
-        dict | list: The parsed JSON data.
+        The parsed JSON data.
 
     Raises:
         ConnectionResponseParseError: If the JSON data could not be decoded.
