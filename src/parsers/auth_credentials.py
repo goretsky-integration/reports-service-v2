@@ -2,7 +2,7 @@ import httpx
 
 from models import AccountTokens
 
-__all__ = ('parse_account_tokens_response',)
+__all__ = ("parse_account_tokens_response",)
 
 
 def parse_account_tokens_response(response: httpx.Response) -> AccountTokens:

@@ -1,6 +1,6 @@
 from enum import StrEnum, auto
 
-__all__ = ('ErrorCode',)
+__all__ = ("ErrorCode",)
 
 
 class ErrorCode(StrEnum):

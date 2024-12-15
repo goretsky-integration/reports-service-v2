@@ -35,15 +35,11 @@ class ProductivityStatisticsFetchInteractor:
     def __init__(
         self,
         dodo_is_api_connection: DodoIsApiConnection,
-        unit_uuids_and_access_tokens: Iterable[
-            tuple[Iterable[UUID], SecretStr]
-        ],
+        unit_uuids_and_access_tokens: Iterable[tuple[Iterable[UUID], SecretStr]],
         period: Period,
     ) -> None:
         self.__dodo_is_api_connection = dodo_is_api_connection
-        self.__unit_uuids_and_access_tokens = tuple(
-            unit_uuids_and_access_tokens
-        )
+        self.__unit_uuids_and_access_tokens = tuple(unit_uuids_and_access_tokens)
         self.__period = period
 
     async def fetch_one(
@@ -55,11 +51,13 @@ class ProductivityStatisticsFetchInteractor:
         unit_uuids = tuple(unit_uuids)
         try:
             try:
-                response = await self.__dodo_is_api_connection.get_productivity_statistics(
-                    unit_uuids=unit_uuids,
-                    access_token=access_token,
-                    from_datetime=self.__period.from_datetime,
-                    to_datetime=self.__period.to_datetime,
+                response = (
+                    await self.__dodo_is_api_connection.get_productivity_statistics(
+                        unit_uuids=unit_uuids,
+                        access_token=access_token,
+                        from_datetime=self.__period.from_datetime,
+                        to_datetime=self.__period.to_datetime,
+                    )
                 )
             except httpx.HTTPError as error:
                 logger.error(
@@ -72,8 +70,8 @@ class ProductivityStatisticsFetchInteractor:
                     error_code=ErrorCode.HTTP_ERROR,
                 )
             try:
-                productivity_statistics = (
-                    parse_productivity_statistics_response(response)
+                productivity_statistics = parse_productivity_statistics_response(
+                    response
                 )
             except ConnectionResponseParseError as error:
                 return FetchResult(
@@ -81,7 +79,9 @@ class ProductivityStatisticsFetchInteractor:
                     exception=error,
                     error_code=ErrorCode.PARSE_ERROR,
                 )
-            return FetchResult(unit_uuids=tuple(unit_uuids), data=productivity_statistics)
+            return FetchResult(
+                unit_uuids=tuple(unit_uuids), data=productivity_statistics
+            )
         except Exception as error:
             logger.error(
                 "Unexpected error occurred while fetching productivity statistics: %s",

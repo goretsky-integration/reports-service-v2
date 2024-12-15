@@ -86,9 +86,7 @@ def unpack_tasks(tasks: Iterable[asyncio.Task]) -> tuple[list, list]:
 @inject
 async def on_late_delivery_vouchers_event(
     event: Event,
-    auth_credentials_storage_connection: (
-        AuthCredentialsStorageConnection
-    ) = Depends(
+    auth_credentials_storage_connection: (AuthCredentialsStorageConnection) = Depends(
         get_auth_credentials_storage_connection,
         use_cache=False,
     ),

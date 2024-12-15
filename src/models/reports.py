@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-__all__ = ('UnitLateDeliveryVouchers',)
+__all__ = ("UnitLateDeliveryVouchers",)
 
 
 class UnitLateDeliveryVouchers(BaseModel):

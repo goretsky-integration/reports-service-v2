@@ -5,6 +5,4 @@ from .units import *
 from .base import parse_response_json_data
 
 
-__all__ = (
-    "parse_response_json_data",
-)
+__all__ = ("parse_response_json_data",)

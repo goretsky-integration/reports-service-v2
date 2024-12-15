@@ -73,14 +73,10 @@ def test_parse_response_json_data_nested_structure():
     """
     Test parsing a nested JSON structure.
     """
-    test_data = (
-        '{"users": [{"id": 1, "name": "John"}, {"id": 2, "name": "Jane"}]}'
-    )
+    test_data = '{"users": [{"id": 1, "name": "John"}, {"id": 2, "name": "Jane"}]}'
     response = httpx.Response(200, content=test_data)
 
     result: dict = parse_response_json_data(response)
 
-    assert result == {
-        "users": [{"id": 1, "name": "John"}, {"id": 2, "name": "Jane"}]
-    }
+    assert result == {"users": [{"id": 1, "name": "John"}, {"id": 2, "name": "Jane"}]}
     assert len(result["users"]) == 2

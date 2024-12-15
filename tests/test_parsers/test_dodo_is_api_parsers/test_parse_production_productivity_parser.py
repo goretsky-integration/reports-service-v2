@@ -61,9 +61,7 @@ def test_parse_productivity_statistics_missing_key():
     """
     Test raising ConnectionResponseParseError when 'productivityStatistics' key is missing.
     """
-    test_data = {
-        "other_key": [{"unitId": str(uuid.uuid4()), "unitName": "Test Unit"}]
-    }
+    test_data = {"other_key": [{"unitId": str(uuid.uuid4()), "unitName": "Test Unit"}]}
 
     response = httpx.Response(200, content=json.dumps(test_data))
 
@@ -71,10 +69,7 @@ def test_parse_productivity_statistics_missing_key():
         parse_productivity_statistics_response(response)
 
     error = exc_info.value
-    assert (
-        str(error)
-        == "Could not find 'productivityStatistics' key in response data"
-    )
+    assert str(error) == "Could not find 'productivityStatistics' key in response data"
     assert error.response == response
 
 

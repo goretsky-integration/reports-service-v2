@@ -3,20 +3,20 @@ from typing import NewType
 import httpx
 
 __all__ = (
-    'AuthCredentialsStorageConnectionHttpClient',
-    'UnitsStorageConnectionHttpClient',
-    'DodoIsApiConnectionHttpClient',
+    "AuthCredentialsStorageConnectionHttpClient",
+    "UnitsStorageConnectionHttpClient",
+    "DodoIsApiConnectionHttpClient",
 )
 
 AuthCredentialsStorageConnectionHttpClient = NewType(
-    'AuthCredentialsStorageConnectionHttpClient',
+    "AuthCredentialsStorageConnectionHttpClient",
     httpx.AsyncClient,
 )
 UnitsStorageConnectionHttpClient = NewType(
-    'UnitsStorageConnectionHttpClient',
+    "UnitsStorageConnectionHttpClient",
     httpx.AsyncClient,
 )
 DodoIsApiConnectionHttpClient = NewType(
-    'DodoIsApiConnectionHttpClient',
+    "DodoIsApiConnectionHttpClient",
     httpx.AsyncClient,
 )

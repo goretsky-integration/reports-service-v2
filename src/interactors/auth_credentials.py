@@ -37,9 +37,7 @@ class AuthTokensFetchInteractor:
         auth_credentials_storage_connection: AuthCredentialsStorageConnection,
         account_names: Iterable[str],
     ):
-        self.__auth_credentials_storage_connection = (
-            auth_credentials_storage_connection
-        )
+        self.__auth_credentials_storage_connection = auth_credentials_storage_connection
         self.__account_names = tuple(account_names)
 
     async def fetch_one(self, account_name: str) -> AuthTokensFetchResult:

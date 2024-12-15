@@ -35,9 +35,7 @@ async def on_revenue_report_event(
         get_dodo_is_api_connection,
         use_cache=False,
     ),
-    auth_credentials_storage_connection: (
-        AuthCredentialsStorageConnection
-    ) = Depends(
+    auth_credentials_storage_connection: (AuthCredentialsStorageConnection) = Depends(
         get_auth_credentials_storage_connection,
         use_cache=False,
     ),
@@ -67,12 +65,10 @@ async def on_revenue_report_event(
     ]
 
     period = Period.today_to_this_time().rounded_to_upper_hour()
-    producitivity_statistics_fetch_interactor = (
-        ProductivityStatisticsFetchInteractor(
-            dodo_is_api_connection=dodo_is_api_connection,
-            unit_uuids_and_access_tokens=unit_uuids_and_access_tokens,
-            period=period,
-        )
+    producitivity_statistics_fetch_interactor = ProductivityStatisticsFetchInteractor(
+        dodo_is_api_connection=dodo_is_api_connection,
+        unit_uuids_and_access_tokens=unit_uuids_and_access_tokens,
+        period=period,
     )
     productivity_statistics_fetch_results_for_today = (
         await producitivity_statistics_fetch_interactor.fetch_all()
@@ -83,12 +79,10 @@ async def on_revenue_report_event(
     )
 
     period = Period.week_before_today_to_this_time().rounded_to_upper_hour()
-    producitivity_statistics_fetch_interactor = (
-        ProductivityStatisticsFetchInteractor(
-            dodo_is_api_connection=dodo_is_api_connection,
-            unit_uuids_and_access_tokens=unit_uuids_and_access_tokens,
-            period=period,
-        )
+    producitivity_statistics_fetch_interactor = ProductivityStatisticsFetchInteractor(
+        dodo_is_api_connection=dodo_is_api_connection,
+        unit_uuids_and_access_tokens=unit_uuids_and_access_tokens,
+        period=period,
     )
     productivity_statistics_fetch_results_for_week_before = (
         await producitivity_statistics_fetch_interactor.fetch_all()

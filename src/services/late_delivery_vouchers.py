@@ -5,27 +5,25 @@ from uuid import UUID
 from models import LateDeliveryVoucher, UnitLateDeliveryVouchers
 from parsers import group_by_unit_uuid
 
-__all__ = ('compute_late_delivery_vouchers_statistics',)
+__all__ = ("compute_late_delivery_vouchers_statistics",)
 
 LateDeliveryVouchers: TypeAlias = Iterable[LateDeliveryVoucher]
 
 
 def compute_late_delivery_vouchers_statistics(
-        vouchers_for_today: LateDeliveryVouchers,
-        vouchers_for_week_before: LateDeliveryVouchers,
-        unit_uuid_to_name: dict[UUID, str],
+    vouchers_for_today: LateDeliveryVouchers,
+    vouchers_for_week_before: LateDeliveryVouchers,
+    unit_uuid_to_name: dict[UUID, str],
 ) -> list[UnitLateDeliveryVouchers]:
-    vouchers_for_today_grouped_by_unit_uuid = (
-        group_by_unit_uuid(vouchers_for_today)
-    )
-    vouchers_for_week_before_grouped_by_unit_uuid = (
-        group_by_unit_uuid(vouchers_for_week_before)
+    vouchers_for_today_grouped_by_unit_uuid = group_by_unit_uuid(vouchers_for_today)
+    vouchers_for_week_before_grouped_by_unit_uuid = group_by_unit_uuid(
+        vouchers_for_week_before
     )
 
     units_late_delivery_vouchers: list[UnitLateDeliveryVouchers] = []
     for unit_uuid, unit_name in unit_uuid_to_name.items():
-        unit_vouchers_for_today = (
-            vouchers_for_today_grouped_by_unit_uuid.get(unit_uuid, [])
+        unit_vouchers_for_today = vouchers_for_today_grouped_by_unit_uuid.get(
+            unit_uuid, []
         )
         unit_vouchers_for_week_before = (
             vouchers_for_week_before_grouped_by_unit_uuid.get(unit_uuid, [])

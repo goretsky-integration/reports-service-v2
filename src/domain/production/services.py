@@ -76,16 +76,14 @@ class UnitsSalesReportGenerator:
     ) -> UnitSalesStatistics:
         sales_for_today: int | None = None
         if unit_uuid in self.unit_uuid_to_statistics_for_today:
-            productivity_statistics = self.unit_uuid_to_statistics_for_today[
-                unit_uuid
-            ]
+            productivity_statistics = self.unit_uuid_to_statistics_for_today[unit_uuid]
             sales_for_today = productivity_statistics.sales
 
         sales_for_week_before: int | None = None
         if unit_uuid in self.unit_uuid_to_statistics_for_week_before:
-            productivity_statistics = (
-                self.unit_uuid_to_statistics_for_week_before[unit_uuid]
-            )
+            productivity_statistics = self.unit_uuid_to_statistics_for_week_before[
+                unit_uuid
+            ]
             sales_for_week_before = productivity_statistics.sales
 
         growth_from_week_before: int | None = None
