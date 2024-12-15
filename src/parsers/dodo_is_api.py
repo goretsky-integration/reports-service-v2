@@ -24,7 +24,7 @@ def parse_productivity_statistics_response(
 ) -> list[UnitProductivityStatistics]:
     type_adapter = TypeAdapter(list[UnitProductivityStatistics])
     response_data: dict = parse_response_json_data(response)
-    
+
     try:
         units_productivity_statistics = response_data["productivityStatistics"]
     except KeyError as error:

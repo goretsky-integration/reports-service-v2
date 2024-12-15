@@ -107,7 +107,7 @@ async def on_revenue_report_event(
     units_sales_statistics = report_generator.get_units_sales_statistics()
 
     logger.info("Units sales statistics: %s", units_sales_statistics)
-    
+
     return SpecificChatsEvent[list[UnitSalesStatistics]](
         type="REVENUE_STATISTICS",
         chat_ids=event.chat_ids,
