@@ -87,3 +87,25 @@ class DodoIsApiConnection:
             headers=headers,
             timeout=60,
         )
+    
+    async def get_productivity_statistics(
+        self,
+        *,
+        access_token: SecretStr,
+        from_datetime: datetime,
+        to_datetime: datetime,
+        unit_uuids: Iterable[UUID],
+    ) -> httpx.Response:
+        request_query_params = build_request_query_params(
+            from_datetime=from_datetime,
+            to_datetime=to_datetime,
+            unit_uuids=unit_uuids,
+        )
+        url = "/production/productivity"
+        headers = build_headers(access_token=access_token)
+        return await self.__http_client.get(
+            url=url,
+            params=request_query_params,
+            headers=headers,
+            timeout=60,
+        )
