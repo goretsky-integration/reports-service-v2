@@ -10,7 +10,7 @@ T = TypeVar("T")
 
 
 class Event(BaseModel):
-    units: Annotated[Unit, Field(strict=True, min_length=1)]
+    units: Annotated[list[Unit], Field(min_length=1)]
     chat_ids: set[int]
 
 
