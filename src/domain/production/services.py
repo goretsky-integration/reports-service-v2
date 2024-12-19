@@ -18,7 +18,7 @@ def compute_growth_in_percents(
 ) -> int:
     if previous_value == 0:
         return 0
-    return int(100 - current_value * 100 / previous_value)
+    return int(current_value * 100 / previous_value - 100)
 
 
 def map_unit_uuid_to_productivity_statistics(
