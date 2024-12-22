@@ -3,6 +3,7 @@ from .common import flatten
 from .dodo_is_api import (
     parse_late_delivery_vouchers_response,
     parse_productivity_statistics_response,
+    parse_units_sales_for_period_response,
 )
 from .units import (
     parse_units_response,
@@ -24,5 +25,6 @@ __all__ = (
     "parse_late_delivery_vouchers_response",
     "parse_productivity_statistics_response",
     "parse_account_tokens_response",
+    "parse_units_sales_for_period_response",
     "flatten",
 )
