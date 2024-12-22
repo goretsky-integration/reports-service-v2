@@ -1,5 +1,6 @@
 from .auth_credentials import AuthTokensFetchInteractor, AuthTokensFetchResult
 from .productivity_statistics import ProductivityStatisticsFetchInteractor, FetchResult
+from .units_sales import UnitsSalesFetchInteractor
 
 
 __all__ = (
@@ -7,4 +8,5 @@ __all__ = (
     "AuthTokensFetchResult",
     "ProductivityStatisticsFetchInteractor",
     "FetchResult",
+    "UnitsSalesFetchInteractor",
 )
