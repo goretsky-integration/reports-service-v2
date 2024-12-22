@@ -1,11 +1,12 @@
 from datetime import datetime
+from typing import Annotated
 from uuid import UUID
 
 from pydantic import BaseModel, Field
 
 from enums import LateDeliveryVoucherIssuer
 
-__all__ = ("LateDeliveryVoucher", "UnitProductivityStatistics")
+__all__ = ("LateDeliveryVoucher", "UnitProductivityStatistics", "UnitSales")
 
 
 class LateDeliveryVoucher(BaseModel):
@@ -37,3 +38,8 @@ class UnitProductivityStatistics(BaseModel):
     orders_per_courier_labour_hour: float = Field(
         validation_alias="ordersPerCourierLabourHour",
     )
+
+
+class UnitSales(BaseModel):
+    unit_uuid: Annotated[UUID, Field(validation_alias="unitId")]
+    sales: int
