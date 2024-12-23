@@ -11,12 +11,14 @@ from dependencies.auth_credentials_storage import (
 )
 from interactors import (
     AuthTokensFetchInteractor,
-    ProductivityStatisticsFetchInteractor,
+    UnitsSalesFetchInteractor,
 )
 from logger import create_logger
-from parsers.units import to_uuids
 from time_helpers import Period
-from parsers import group_by_dodo_is_api_account_name
+from parsers import (
+    to_dodo_is_api_account_names,
+    merge_account_tokens_and_units,
+)
 from domain.production.services import SalesStatisticsReportGenerator
 from domain.production.models import SalesStatistics
 from handlers.router import router
@@ -25,7 +27,7 @@ logger = create_logger("handlers:revenue")
 
 
 @router.subscriber("sales-statistics")
-@router.publisher("specific-chats-event")
+# @router.publisher("specific-chats-event")
 @inject
 async def on_revenue_report_event(
     event: Event,
@@ -38,7 +40,7 @@ async def on_revenue_report_event(
         use_cache=False,
     ),
 ) -> SpecificChatsEvent[SalesStatistics]:
-    account_names = {unit.dodo_is_api_account_name for unit in event.units}
+    account_names = to_dodo_is_api_account_names(event.units)
     auth_tokens_fetch_interactor = AuthTokensFetchInteractor(
         account_names=account_names,
         auth_credentials_storage_connection=auth_credentials_storage_connection,
@@ -47,53 +49,48 @@ async def on_revenue_report_event(
 
     logger.info("Fetched auth tokens: %s", auth_tokens_fetch_results)
 
-    account_name_to_access_token = {
-        result.data.account_name: result.data.access_token
-        for result in auth_tokens_fetch_results
-        if result.data is not None
-    }
-    account_name_to_units = group_by_dodo_is_api_account_name(event.units)
-
-    unit_uuids_and_access_tokens = [
-        (
-            to_uuids(account_name_to_units[account_name]),
-            access_token,
-        )
-        for account_name, access_token in account_name_to_access_token.items()
+    accounts_tokens = [
+        auth_tokens_fetch_result.data
+        for auth_tokens_fetch_result in auth_tokens_fetch_results
+        if auth_tokens_fetch_result.data is not None
     ]
 
-    period = Period.today_to_this_time().rounded_to_upper_hour()
-    producitivity_statistics_fetch_interactor = ProductivityStatisticsFetchInteractor(
-        dodo_is_api_connection=dodo_is_api_connection,
-        unit_uuids_and_access_tokens=unit_uuids_and_access_tokens,
-        period=period,
-    )
-    productivity_statistics_fetch_results_for_today = (
-        await producitivity_statistics_fetch_interactor.fetch_all()
-    )
-    logger.info(
-        "Fetched productivity statistics for today: %s",
-        productivity_statistics_fetch_results_for_today,
+    accounts_tokens_and_unit_uuids = merge_account_tokens_and_units(
+        units=event.units,
+        accounts_tokens=accounts_tokens,
     )
 
-    period = Period.week_before_today_to_this_time().rounded_to_upper_hour()
-    producitivity_statistics_fetch_interactor = ProductivityStatisticsFetchInteractor(
+    units_sales_fetch_interactor = UnitsSalesFetchInteractor(
         dodo_is_api_connection=dodo_is_api_connection,
-        unit_uuids_and_access_tokens=unit_uuids_and_access_tokens,
-        period=period,
+        accounts_tokens_and_unit_uuids=accounts_tokens_and_unit_uuids,
+        period=Period.today_to_this_time(),
     )
-    productivity_statistics_fetch_results_for_week_before = (
-        await producitivity_statistics_fetch_interactor.fetch_all()
-    )
+
+    units_sales_fetch_results_for_today = await units_sales_fetch_interactor.fetch_all()
+
     logger.info(
-        "Fetched productivity statistics for week before: %s",
-        productivity_statistics_fetch_results_for_today,
+        "Fetched units sales for today: %s", units_sales_fetch_results_for_today
+    )
+
+    units_sales_fetch_interactor = UnitsSalesFetchInteractor(
+        dodo_is_api_connection=dodo_is_api_connection,
+        accounts_tokens_and_unit_uuids=accounts_tokens_and_unit_uuids,
+        period=Period.week_before_today_to_this_time(),
+    )
+
+    units_sales_fetch_results_for_week_before = (
+        await units_sales_fetch_interactor.fetch_all()
+    )
+
+    logger.info(
+        "Fetched units sales for week before: %s",
+        units_sales_fetch_results_for_week_before,
     )
 
     report_generator = SalesStatisticsReportGenerator(
         event=event,
-        productivity_statistics_fetch_results_for_today=productivity_statistics_fetch_results_for_today,
-        productivity_statistics_fetch_results_for_week_before=productivity_statistics_fetch_results_for_week_before,
+        unit_sales_fetch_results_for_today=units_sales_fetch_results_for_today,
+        unit_sales_fetch_results_for_week_before=units_sales_fetch_results_for_week_before,
     )
 
     sales_statistics = report_generator.get_report()

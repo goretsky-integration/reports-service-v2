@@ -14,6 +14,7 @@ from .units import (
     group_by_dodo_is_api_account_name,
     group_by_unit_uuid,
     to_uuids,
+    to_dodo_is_api_account_names,
 )
 from .base import parse_response_json_data
 
@@ -31,4 +32,5 @@ __all__ = (
     "parse_units_sales_for_period_response",
     "flatten",
     "merge_account_tokens_and_units",
+    "to_dodo_is_api_account_names",
 )

@@ -7,8 +7,8 @@ from domain.production.models import (
     TotalSalesStatistics,
     SalesStatistics,
 )
-from interactors.productivity_statistics import FetchResult
-from models.dodo_is_api import UnitProductivityStatistics
+from models import FetchResult
+from models.dodo_is_api import UnitSales
 from models.events import Event
 
 
@@ -21,16 +21,15 @@ def compute_growth_in_percents(
     return int(current_value * 100 / previous_value - 100)
 
 
-def map_unit_uuid_to_productivity_statistics(
-    results: Iterable[FetchResult[list[UnitProductivityStatistics]]],
-) -> dict[UUID, UnitProductivityStatistics]:
-    unit_uuid_to_statistics: dict[UUID, UnitProductivityStatistics] = {}
+def map_unit_uuid_to_unit_sales(
+    results: Iterable[FetchResult[list[UnitSales]]],
+) -> dict[UUID, UnitSales]:
+    unit_uuid_to_statistics: dict[UUID, UnitSales] = {}
     for result in results:
         if result.data is None:
             continue
-        for unit_productivity_statistics in result.data:
-            unit_uuid = unit_productivity_statistics.unit_uuid
-            unit_uuid_to_statistics[unit_uuid] = unit_productivity_statistics
+        for unit_sales in result.data:
+            unit_uuid_to_statistics[unit_sales.unit_uuid] = unit_sales
     return unit_uuid_to_statistics
 
 
@@ -38,19 +37,15 @@ class SalesStatisticsReportGenerator:
     def __init__(
         self,
         event: Event,
-        productivity_statistics_fetch_results_for_today: Iterable[
-            FetchResult[list[UnitProductivityStatistics]]
-        ],
-        productivity_statistics_fetch_results_for_week_before: Iterable[
-            FetchResult[list[UnitProductivityStatistics]]
+        unit_sales_fetch_results_for_today: Iterable[FetchResult[list[UnitSales]]],
+        unit_sales_fetch_results_for_week_before: Iterable[
+            FetchResult[list[UnitSales]]
         ],
     ) -> None:
         self.__event = event
-        self.__productivity_statistics_fetch_results_for_today = (
-            productivity_statistics_fetch_results_for_today
-        )
-        self.__productivity_statistics_fetch_results_for_week_before = (
-            productivity_statistics_fetch_results_for_week_before
+        self.__unit_sales_fetch_results_for_today = unit_sales_fetch_results_for_today
+        self.__unit_sales_fetch_results_for_week_before = (
+            unit_sales_fetch_results_for_week_before
         )
 
     def get_event_units_uuids_and_names(self) -> list[tuple[UUID, str]]:
@@ -59,17 +54,17 @@ class SalesStatisticsReportGenerator:
     @cached_property
     def unit_uuid_to_statistics_for_today(
         self,
-    ) -> dict[UUID, UnitProductivityStatistics]:
-        return map_unit_uuid_to_productivity_statistics(
-            results=self.__productivity_statistics_fetch_results_for_today,
+    ) -> dict[UUID, UnitSales]:
+        return map_unit_uuid_to_unit_sales(
+            results=self.__unit_sales_fetch_results_for_today,
         )
 
     @cached_property
     def unit_uuid_to_statistics_for_week_before(
         self,
-    ) -> dict[UUID, UnitProductivityStatistics]:
-        return map_unit_uuid_to_productivity_statistics(
-            results=self.__productivity_statistics_fetch_results_for_week_before,
+    ) -> dict[UUID, UnitSales]:
+        return map_unit_uuid_to_unit_sales(
+            results=self.__unit_sales_fetch_results_for_week_before,
         )
 
     def get_total_sales_statistics(self) -> TotalSalesStatistics:
