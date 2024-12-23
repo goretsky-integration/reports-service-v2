@@ -1,5 +1,6 @@
 from fast_depends import inject, Depends
 
+from application.enums import OutputEventType
 from models.events import Event, SpecificChatsEvent
 from dependencies.dodo_is_api import (
     DodoIsApiConnection,
@@ -27,7 +28,7 @@ logger = create_logger("handlers:revenue")
 
 
 @router.subscriber("sales-statistics")
-# @router.publisher("specific-chats-event")
+@router.publisher("specific-chats-event")
 @inject
 async def on_revenue_report_event(
     event: Event,
@@ -98,7 +99,7 @@ async def on_revenue_report_event(
     logger.info("Sales statistics report: %s", sales_statistics)
 
     return SpecificChatsEvent[SalesStatistics](
-        type="SALES_STATISTICS",
+        type=OutputEventType.SALES_STATISTICS,
         chat_ids=event.chat_ids,
         payload=sales_statistics,
     )
