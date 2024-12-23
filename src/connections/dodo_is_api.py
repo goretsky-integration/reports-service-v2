@@ -121,3 +121,34 @@ class DodoIsApiConnection:
             response.status_code,
         )
         return response
+
+    async def get_units_sales_for_period(
+        self,
+        *,
+        access_token: SecretStr,
+        from_datetime: datetime,
+        to_datetime: datetime,
+        unit_uuids: Iterable[UUID],
+    ):
+        request_query_params = build_request_query_params(
+            from_datetime=from_datetime,
+            to_datetime=to_datetime,
+            unit_uuids=unit_uuids,
+        )
+        url = "/finances/sales/units"
+        headers = build_headers(access_token=access_token)
+        logger.debug(
+            "Requesting units sales from Dodo IS API: %s",
+            request_query_params,
+            extra=request_query_params,
+        )
+        response = await self.__http_client.get(
+            url=url,
+            params=request_query_params,
+            headers=headers,
+        )
+        logger.debug(
+            "Received units sales from Dodo IS API with status code: %s",
+            response.status_code,
+        )
+        return response

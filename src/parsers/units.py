@@ -14,6 +14,7 @@ __all__ = (
     "group_by_dodo_is_api_account_name",
     "group_by_unit_uuid",
     "to_uuids",
+    "to_dodo_is_api_account_names",
 )
 
 T = TypeVar("T", bound=Unit)
@@ -23,7 +24,14 @@ class HasUnitUUID(Protocol):
     unit_uuid: UUID
 
 
+class HasDodoIsApiAccountName(Protocol):
+    dodo_is_api_account_name: str
+
+
 HasUnitUUIDT = TypeVar("HasUnitUUIDT", bound=HasUnitUUID)
+HasDodoIsApiAccountNameT = TypeVar(
+    "HasDodoIsApiAccountNameT", bound=HasDodoIsApiAccountName
+)
 
 
 def parse_units_response(response: httpx.Response) -> list[Unit]:
@@ -50,7 +58,9 @@ def group_by_dodo_is_api_account_name(
     return dict(account_name_to_items)
 
 
-def group_by_unit_uuid(items: Iterable[HasUnitUUIDT]) -> dict[UUID, list[HasUnitUUIDT]]:
+def group_by_unit_uuid(
+    items: Iterable[HasUnitUUIDT],
+) -> dict[UUID, list[HasUnitUUIDT]]:
     unit_uuid_to_items: defaultdict[UUID, list[HasUnitUUIDT]] = defaultdict(list)
     for item in items:
         unit_uuid_to_items[item.unit_uuid].append(item)
@@ -59,3 +69,9 @@ def group_by_unit_uuid(items: Iterable[HasUnitUUIDT]) -> dict[UUID, list[HasUnit
 
 def to_uuids(items: Iterable[T]) -> list[UUID]:
     return [item.uuid for item in items]
+
+
+def to_dodo_is_api_account_names(
+    items: Iterable[HasDodoIsApiAccountNameT],
+) -> set[str]:
+    return {item.dodo_is_api_account_name for item in items}
