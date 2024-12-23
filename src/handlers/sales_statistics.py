@@ -1,6 +1,6 @@
 from fast_depends import inject, Depends
 
-from application.enums import OutputEventType
+from application.enums import OutputEventType, QueueName
 from models.events import Event, SpecificChatsEvent
 from dependencies.dodo_is_api import (
     DodoIsApiConnection,
@@ -27,8 +27,8 @@ from handlers.router import router
 logger = create_logger("handlers:revenue")
 
 
-@router.subscriber("sales-statistics")
-@router.publisher("specific-chats-event")
+@router.subscriber(QueueName.SALES_STATISTICS)
+@router.publisher(QueueName.SPECIFIC_CHATS_EVENT)
 @inject
 async def on_revenue_report_event(
     event: Event,
