@@ -1,12 +1,18 @@
-from datetime import datetime
+from datetime import datetime, date
 from typing import Annotated
 from uuid import UUID
 
 from pydantic import BaseModel, Field
 
-from enums import LateDeliveryVoucherIssuer
+from enums import LateDeliveryVoucherIssuer, StaffType
 
-__all__ = ("LateDeliveryVoucher", "UnitProductivityStatistics", "UnitSales")
+__all__ = (
+    "LateDeliveryVoucher",
+    "UnitProductivityStatistics",
+    "UnitSales",
+    "StaffMemberBirthday",
+    "StaffMembersBirthdaysResponse",
+)
 
 
 class LateDeliveryVoucher(BaseModel):
@@ -43,3 +49,21 @@ class UnitProductivityStatistics(BaseModel):
 class UnitSales(BaseModel):
     unit_uuid: Annotated[UUID, Field(validation_alias="unitId")]
     sales: int
+
+
+class StaffMemberBirthday(BaseModel):
+    staff_id: Annotated[UUID, Field(validation_alias="staffId")]
+    first_name: Annotated[str, Field(validation_alias="firstName")]
+    last_name: Annotated[str, Field(validation_alias="lastName")]
+    patronymic_name: Annotated[str | None, Field(validation_alias="patronymicName")]
+    date_of_birth: Annotated[date, Field(validation_alias="dateOfBirth")]
+    unit_uuid: Annotated[UUID, Field(validation_alias="unitId")]
+    unit_name: Annotated[str, Field(validation_alias="unitName")]
+    staff_type: Annotated[StaffType, Field(validation_alias="staffType")]
+    position_id: Annotated[UUID | None, Field(validation_alias="positionId")]
+    position_name: Annotated[str | None, Field(validation_alias="positionName")]
+
+
+class StaffMembersBirthdaysResponse(BaseModel):
+    birthdays: Annotated[tuple[StaffMemberBirthday, ...], Field(alias="Birthdays")]
+    is_end_of_list_reached: Annotated[bool, Field(alias="IsEndOfListReached")]

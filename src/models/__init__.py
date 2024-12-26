@@ -3,6 +3,8 @@ from .dodo_is_api import (
     LateDeliveryVoucher,
     UnitProductivityStatistics,
     UnitSales,
+    StaffMembersBirthdaysResponse,
+    StaffMemberBirthday,
 )
 from .fetch_results import FetchResult
 from .events import Event, SpecificChatsEvent
@@ -21,4 +23,6 @@ __all__ = (
     "UnitLateDeliveryVouchers",
     "Unit",
     "UnitSales",
+    "StaffMembersBirthdaysResponse",
+    "StaffMemberBirthday",
 )
