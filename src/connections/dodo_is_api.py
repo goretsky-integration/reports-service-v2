@@ -152,3 +152,41 @@ class DodoIsApiConnection:
             response.status_code,
         )
         return response
+
+    async def iter_staff_members_birthdays(
+        self,
+        *,
+        access_token: SecretStr,
+        unit_uuids: Iterable[UUID],
+        day_from: int,
+        day_to: int,
+        month_from: int,
+        month_to: int,
+        take: int,
+        skip: int,
+    ) -> httpx.Response:
+        url = "/staff/members/birthdays"
+        request_query_params = {
+            "units": stringify_uuids(unit_uuids),
+            "dayFrom": day_from,
+            "dayTo": day_to,
+            "monthFrom": month_from,
+            "monthTo": month_to,
+            "take": take,
+            "skip": skip,
+        }
+        headers = build_headers(access_token=access_token)
+        logger.debug(
+            "Requesting staff members birthdays from Dodo IS API: %s",
+            request_query_params,
+        )
+        response = await self.__http_client.get(
+            url=url,
+            params=request_query_params,
+            headers=headers,
+        )
+        logger.debug(
+            "Received staff members birthdays from Dodo IS API with status code: %s",
+            response.status_code,
+        )
+        return response
