@@ -274,7 +274,7 @@ async def main():
                     },
                 ],
             },
-            "sales-statistics",
+            "staff_members_birthdays",
         )
 
 
