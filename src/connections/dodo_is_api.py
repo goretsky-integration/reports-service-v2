@@ -153,7 +153,7 @@ class DodoIsApiConnection:
         )
         return response
 
-    async def iter_staff_members_birthdays(
+    async def get_staff_members_birthdays(
         self,
         *,
         access_token: SecretStr,

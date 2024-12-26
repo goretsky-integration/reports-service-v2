@@ -2,13 +2,19 @@ import httpx
 from pydantic import TypeAdapter, ValidationError
 
 from exceptions import ConnectionResponseParseError
-from models import LateDeliveryVoucher, UnitProductivityStatistics, UnitSales
+from models import (
+    LateDeliveryVoucher,
+    UnitProductivityStatistics,
+    UnitSales,
+    StaffMembersBirthdaysResponse,
+)
 from parsers.base import parse_response_json_data
 
 __all__ = (
     "parse_late_delivery_vouchers_response",
     "parse_productivity_statistics_response",
     "parse_units_sales_for_period_response",
+    "parse_staff_members_birthdays_response",
 )
 
 
@@ -57,6 +63,18 @@ def parse_units_sales_for_period_response(
         ) from error
     try:
         return type_adapter.validate_python(units_sales)
+    except ValidationError as error:
+        raise ConnectionResponseParseError(
+            "Pydantic validation error",
+            response=response,
+        ) from error
+
+
+def parse_staff_members_birthdays_response(
+    response: httpx.Response,
+) -> StaffMembersBirthdaysResponse:
+    try:
+        return StaffMembersBirthdaysResponse.model_validate_json(response.text)
     except ValidationError as error:
         raise ConnectionResponseParseError(
             "Pydantic validation error",

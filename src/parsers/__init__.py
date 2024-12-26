@@ -7,6 +7,7 @@ from .dodo_is_api import (
     parse_late_delivery_vouchers_response,
     parse_productivity_statistics_response,
     parse_units_sales_for_period_response,
+    parse_staff_members_birthdays_response,
 )
 from .units import (
     parse_units_response,
@@ -33,4 +34,5 @@ __all__ = (
     "flatten",
     "merge_account_tokens_and_units",
     "to_dodo_is_api_account_names",
+    "parse_staff_members_birthdays_response",
 )
