@@ -96,19 +96,19 @@ class SalesStatisticsReportGenerator:
         unit_uuid: UUID,
         unit_name: str,
     ) -> UnitSalesStatistics:
-        sales_for_today: int | None = None
+        sales_for_today: int | None = 0
         if unit_uuid in self.unit_uuid_to_statistics_for_today:
             productivity_statistics = self.unit_uuid_to_statistics_for_today[unit_uuid]
             sales_for_today = productivity_statistics.sales
 
-        sales_for_week_before: int | None = None
+        sales_for_week_before: int | None = 0
         if unit_uuid in self.unit_uuid_to_statistics_for_week_before:
             productivity_statistics = self.unit_uuid_to_statistics_for_week_before[
                 unit_uuid
             ]
             sales_for_week_before = productivity_statistics.sales
 
-        growth_from_week_before: int | None = None
+        growth_from_week_before: int | None = 0
         if sales_for_today is not None and sales_for_week_before is not None:
             growth_from_week_before = compute_growth_in_percents(
                 current_value=sales_for_today,
